@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    HAZEL_GATEWAY_DB=/data/hazel_kendra_gateway.sqlite3
+
+WORKDIR /app
+
+COPY requirements.gateway.txt ./
+RUN pip install --no-cache-dir -r requirements.gateway.txt
+
+COPY services/hazel_config.py services/kendra_contract.py services/kendra_gateway.py ./services/
+
+RUN useradd --create-home --uid 10001 gateway \
+    && mkdir -p /data \
+    && chown -R gateway:gateway /app /data
+
+USER gateway
+
+EXPOSE 10000
+
+CMD ["sh", "-c", "exec uvicorn services.kendra_gateway:app --host 0.0.0.0 --port ${PORT:-10000} --workers 1"]

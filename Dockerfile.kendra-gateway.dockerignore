@@ -1,0 +1,6 @@
+**
+!requirements.gateway.txt
+!services
+!services/hazel_config.py
+!services/kendra_contract.py
+!services/kendra_gateway.py
