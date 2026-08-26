@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: hazel-kendra-gateway
+    runtime: docker
+    plan: starter
+    region: frankfurt
+    dockerfilePath: ./Dockerfile.kendra-gateway
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    numInstances: 1
+    envVars:
+      - key: KENDRA_MERCHANT_API_KEY
+        sync: false
+      - key: HAZEL_GATEWAY_DEVICE_PEPPER
+        generateValue: true
+      - key: KENDRA_BASE_URL
+        value: https://pay.atsfriendlyresume.pro
+      - key: KENDRA_PACKAGE_CODE
+        value: hazel_30_usd
+      - key: KENDRA_PAYMENT_PROVIDER
+        value: MPESA
+      - key: KENDRA_PACKAGE_CURRENCY
+        value: KES
+      - key: KENDRA_PACKAGE_PRICE_USD
+        value: "30"
+      - key: KENDRA_PACKAGE_PRICE_AMOUNT
+        value: "3900"
+      - key: KENDRA_USD_TO_KES_RATE
+        value: "130"
+      - key: KENDRA_DAILY_SERVICE_CODE
+        value: HAZEL_DAILY_ACCESS
+      - key: HAZEL_GATEWAY_DB
+        value: /data/hazel_kendra_gateway.sqlite3
+    disk:
+      name: hazel-gateway-data
+      mountPath: /data
+      sizeGB: 1
